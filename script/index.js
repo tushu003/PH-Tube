@@ -11,12 +11,20 @@ const displayVideos=()=>{
   .then(data=>displayVideo(data.videos))
 }
 
+const displayCategoryVideos=(id)=>{
+    const url=`https://openapi.programming-hero.com/api/phero-tube/category/${id}`;
+    
+    fetch(url)
+    .then(res=>res.json())
+    .then(data=>displayVideo(data.category))
+}
+
 function displayCategories(categories){
   const getCategory=document.getElementById("category-container")
   for(let cat of categories){
     const categoryDiv=document.createElement("div")
     categoryDiv.innerHTML=`
-    <button class="btn button-small hover:bg-[#FF1F3D] hover:text-white">${cat.category}</button>
+    <button onclick="displayCategoryVideos(${cat.category_id})" class="btn button-small hover:bg-[#FF1F3D] hover:text-white">${cat.category}</button>
     `
     getCategory.appendChild(categoryDiv)
 }
@@ -24,6 +32,18 @@ function displayCategories(categories){
 
 const displayVideo=(videos)=>{
     const videoCategory=document.getElementById("video-container")
+     videoCategory.innerHTML="";
+
+    if(videos.length===0){
+        videoCategory.innerHTML=`
+         <div class="flex flex-col col-span-full py-16 items-center justify-center">
+     <img src="assets/Icon.png" alt="">
+     <p class="font-bold text-2xl text-center">Oops!! Sorry, There is no content here</p>
+ </div>
+        `
+        return;
+    }
+
     videos.forEach((video)=>{
         const videoCard=document.createElement("div")
         videoCard.innerHTML=`
@@ -58,5 +78,6 @@ const displayVideo=(videos)=>{
 }
 
 
+
 loadCategories()
-displayVideos()
+
